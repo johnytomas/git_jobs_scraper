@@ -1,0 +1,49 @@
+name: Daily Job Scraper
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # Spustí se každý den v 6:00 UTC
+  workflow_dispatch:      # Umožní manuální spuštění
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4    # Aktualizováno na nejnovější verzi
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5    # Aktualizováno na nejnovější verzi
+      with:
+        python-version: '3.x'    # Použije nejnovější stabilní verzi Python 3
+        cache: 'pip'    # Přidáno cachování pip balíčků pro rychlejší běh
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Create service account file
+      env:
+        GOOGLE_SA_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+      run: |
+        echo '${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}' > service_account.json
+      shell: bash
+    
+    - name: Debug - Check service account file
+      run: |
+        ls -l service_account.json
+        head -n 1 service_account.json
+    
+    - name: Run scraper
+      run: |
+        python main.py
+      
+    - name: Upload to Google Drive
+      run: |
+        python upload_to_drive.py
+      
+    - name: Cleanup sensitive files    # Přidáno explicitní čištění citlivých souborů
+      if: always()    # Spustí se vždy, i když předchozí kroky selžou
+      run: |
+        rm -f service_account.json
