@@ -8,7 +8,7 @@ import docx.oxml.shared
 import docx.opc.constants
 
 # Základní URL pro scraping - snadno upravitelné pro různé filtry
-BASE_URL = "https://www.jobs.cz/prace/brno/python-vyvojar/?locality%5Bradius%5D=10"
+BASE_URL = "https://www.jobs.cz/prace/python-vyvojar/"
 
 # Přidání headers pro requests
 HEADERS = {
