@@ -2,7 +2,7 @@ name: Daily Job Scraper
 
 on:
   schedule:
-    - cron: '0 6 * * *'  # Spustí se každý den v 6:00 UTC
+    - cron: '30 15 * * 4'  # Spustí se každý čtvrtek v 15:30 UTC
   workflow_dispatch:      # Umožní manuální spuštění
 
 jobs:
